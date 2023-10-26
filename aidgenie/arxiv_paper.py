@@ -5,6 +5,7 @@ import pandas as pd
 import streamlit as st
 from streamlit_extras.dataframe_explorer import dataframe_explorer
 
+
 def search_arxiv(query):
     """
     This function searches the arXiv database for papers based on the provided query.
@@ -17,23 +18,23 @@ def search_arxiv(query):
     df (DataFrame): DataFrame containing the search results.
     """
     if st.toggle("Sort by Date"):
-       search = arxiv.Search(
-        query = query,
-        max_results = 300,
-        sort_by = arxiv.SortCriterion.SubmittedDate,
-        sort_order = arxiv.SortOrder.Descending
-        )
-    else: 
         search = arxiv.Search(
-            query = query,
-            max_results = 300,
-            sort_by = arxiv.SortCriterion.Relevance,#.SubmittedDate,
-            sort_order = arxiv.SortOrder.Descending
-            )
+            query=query,
+            max_results=300,
+            sort_by=arxiv.SortCriterion.SubmittedDate,
+            sort_order=arxiv.SortOrder.Descending,
+        )
+    else:
+        search = arxiv.Search(
+            query=query,
+            max_results=300,
+            sort_by=arxiv.SortCriterion.Relevance,  # .SubmittedDate,
+            sort_order=arxiv.SortOrder.Descending,
+        )
 
     all_data = []
     for result in search.results():
-        temp = ["","","","",""]
+        temp = ["", "", "", "", ""]
         temp[0] = result.title
         temp[1] = result.published
         temp[2] = result.entry_id
@@ -41,13 +42,14 @@ def search_arxiv(query):
         temp[4] = result.pdf_url
         all_data.append(temp)
 
-
-    column_names = ['Title','Date','Id','Summary','URL']
+    column_names = ["Title", "Date", "Id", "Summary", "URL"]
     df = pd.DataFrame(all_data, columns=column_names)
     filtered_df = dataframe_explorer(df, case=False)
 
     # print("Number of papers extracted : ",df.shape[0])
     return filtered_df
+
+
 def arxiv_2_file(url, filename):
     """
     Downloads a PDF from a given URL and saves it to a file.
@@ -59,7 +61,7 @@ def arxiv_2_file(url, filename):
     Returns:
     res (str): A message indicating whether the download was successful.
     """
-    filename = filename+'.pdf'
+    filename = filename + ".pdf"
     response = requests.get(url, stream=True)
     folder_path = "../data/"
     file_path = os.path.join(folder_path, filename)
@@ -75,7 +77,6 @@ def arxiv_2_file(url, filename):
         res = "Failed to download the PDF file."
 
     return res
-
 
 
 # def arxiv_2_file(url, filename):
@@ -107,7 +108,7 @@ def arxiv_2_file(url, filename):
 #             downloaded += len(data)
 #         st.progress(downloaded / download_size)
 #         with open(file_path, "wb") as f:
-#             f.write(response.content)  
+#             f.write(response.content)
 #         if downloaded == download_size:
 #             msg.toast('Finished!')
 #             res = "PDF file downloaded successfully."
@@ -138,12 +139,12 @@ def arxiv_2_file(url, filename):
 #         download_size = int(response.headers.get("content-length", 0))
 #         downloaded = 0
 #         # with open(file_path, "wb") as f:
-#         #     f.write(response.content) 
+#         #     f.write(response.content)
 #         with open(file_path, "wb") as f:
 #             for chunk in response.iter_content(chunk_size=1024):
 #                 if chunk:  # filter out keep-alive new chunks
 #                     f.write(chunk)
-#                     downloaded += len(chunk) 
+#                     downloaded += len(chunk)
 #         if downloaded == download_size:
 #             res = "PDF file downloaded successfully."
 #         else:

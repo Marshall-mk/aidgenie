@@ -3,11 +3,14 @@ import textwrap
 import pdfminer.high_level
 import matplotlib.pyplot as plt
 from pdfminer.layout import LAParams
+
 # import torch
 # from PIL import Image
 # from donut import DonutModel
 import warnings
+
 warnings.filterwarnings("ignore")
+
 
 # converts pdf to text
 def pdf_2_text(file):
@@ -22,16 +25,19 @@ def pdf_2_text(file):
     """
     with open(file, "rb") as fp:
         text = pdfminer.high_level.extract_text(
-                    fp, 
-                    codec="utf-8",
-                    laparams=LAParams(
-                        line_margin=0.5,
-                        word_margin=0.1,
-                        boxes_flow=0.5,
-                        detect_vertical=True,
-                        all_texts=True,),
-                    maxpages=0,)
+            fp,
+            codec="utf-8",
+            laparams=LAParams(
+                line_margin=0.5,
+                word_margin=0.1,
+                boxes_flow=0.5,
+                detect_vertical=True,
+                all_texts=True,
+            ),
+            maxpages=0,
+        )
     return text
+
 
 def chunk_text(text):
     """
@@ -44,7 +50,6 @@ def chunk_text(text):
         list: A list of text chunks.
     """
     return textwrap.wrap(text, 4000)
-
 
 
 # def ocrpdf(file_path, question):
@@ -62,18 +67,22 @@ def chunk_text(text):
 #         pretrained_model.encoder.to(torch.bfloat16)
 #     pretrained_model.eval()
 #     output = pretrained_model.inference(input_img, prompt=user_prompt)["predictions"][0]
-#c = ocrpdf("../data/hamzah_report.jpg", "What is the conclusion")
-
+# c = ocrpdf("../data/hamzah_report.jpg", "What is the conclusion")
 
 
 def ocrpdf(file_path):
     from doctr.io import DocumentFile
     from doctr.models import ocr_predictor
+
     model = ocr_predictor(pretrained=True)
     if file_path.endswith(".pdf"):
         # PDF
         doc = DocumentFile.from_pdf(file_path)
-    elif file_path.endswith(".png") or file_path.endswith(".jpg") or file_path.endswith(".jpeg"):
+    elif (
+        file_path.endswith(".png")
+        or file_path.endswith(".jpg")
+        or file_path.endswith(".jpeg")
+    ):
         # image
         doc = DocumentFile.from_images(file_path)
     else:
@@ -86,14 +95,9 @@ def ocrpdf(file_path):
     # plt.imshow(synthetic_pages[0]); plt.axis('off'); plt.show()
     return result.export()
 
+
 # json_output = ocrpdf("../data/hamzah_report.jpg")
 # print(json_output)
-
-
-
-
-
-
 
 
 # inferenceModel.py
