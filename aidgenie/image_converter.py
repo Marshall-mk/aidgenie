@@ -18,7 +18,6 @@ class ImageConverter:
         """
         Initializes the class with the file path of the image dataset.
         """
-        # self.file_path = file_path
         self.file_path = f"../data/{file_path}"
 
     def convert_to_jpg(self) -> None:
@@ -53,7 +52,7 @@ class ImageConverter:
                 img = Image.fromarray(img)
                 file_name = self.file_path.split("/")[-1].split(".")[0]
                 img.save(f"../data/{file_name}.jpg")
-            except:
+            except Exception:
                 st.write("Invalid Object Used")
 
     def convert_to_png(self) -> None:
@@ -89,10 +88,10 @@ class ImageConverter:
                 # img.save(f"../data/{os.path.splitext(self.file_path)[0]}.png")
                 file_name = self.file_path.split("/")[-1].split(".")[0]
                 img.save(f"../data/{file_name}.png")
-            except:
+            except Exception:
                 st.write("Invalid Object Used")
 
-    def convert_to_h5(self) -> None:
+    def convert_to_h5(self) -> None:  # sourcery skip: class-extract-method, extract-method
         """
         Converts the image dataset to h5 format.
         """
@@ -120,7 +119,7 @@ class ImageConverter:
             dset = f.create_dataset("binary_data", (100,), dtype=dt)
             dset[0] = np.fromstring(binary_data, dtype="uint8")
 
-    def convert_to_hdf5(self) -> None:
+    def convert_to_hdf5(self) -> None:  # sourcery skip: extract-method
         """
         Converts the image dataset to h5 format.
         """
@@ -154,31 +153,27 @@ class ImageConverter:
     """Returns a resized num_px * num_px matrix by load img from input dir
     """
 
-    def preprocess(image_path, num_px):
-        # print()
+    def preprocess(self, image_path, num_px):
         print("Preprocessing Image: ", image_path)
         image = Image.open(image_path)
         print("Image Size: ", image.size)
-        # print()
-
         resized_image = image.resize((num_px, num_px))
         print("Image Size: ", resized_image.size)
-        image_arr = np.array(resized_image)
-        return image_arr
+        return np.array(resized_image)
 
     """Converts a directory full of different shaped images to a standard h5 file of parameterized dimention
     """
 
-    def convert_dir(input_dir, output_file_name, dimention):
+    def convert_dir(self, input_dir, output_file_name, dimention):
         arr = os.listdir(input_dir)
         result_arr = np.empty([len(arr), dimention, dimention, 3], dtype="int16")
 
-        for i in range(0, len(arr)):
-            f_path = input_dir + "/" + arr[i]
-            im_array = preprocess(f_path, dimention)
+        for i in range(len(arr)):
+            f_path = f"{input_dir}/{arr[i]}"
+            im_array = self.preprocess(f_path, dimention)
             result_arr[i] = im_array
         # convert to h5 file
-        h5f = h5py.File(output_file_name + ".h5", "w")
+        h5f = h5py.File(f"{output_file_name}.h5", "w")
         h5f.create_dataset("dataset_1", data=result_arr)
 
 

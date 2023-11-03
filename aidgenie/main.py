@@ -16,7 +16,7 @@ from dicom_viewer_and_annon import anonymize_dicom_file, dicom_viewer
 warnings.filterwarnings("ignore")
 
 
-def try_out():
+def try_out():    # sourcery skip: extract-method, for-append-to-extend, identity-comprehension, list-comprehension, remove-pass-elif, simplify-generator, use-named-expression
     #  headings and tabs creation
     (
         ConvertStoreTab,
@@ -118,7 +118,6 @@ def try_out():
         )
         # pdf file to text file
         with PDF2TextTab:
-            # st.write("Upload Pdf Report")
             file = st.file_uploader("Select PDF file", key="PDF2TextTab_file")
 
             if file:
@@ -127,7 +126,6 @@ def try_out():
                 texts = chunk_text(doc)
                 all_sum_texts = []
                 for text in texts:
-                    # sum_text = summerizer(text)
                     all_sum_texts.append(text)
                 st.text(textwrap.fill(" ".join(all_sum_texts), 150))
                 # Save the text to a .txt file
@@ -182,7 +180,6 @@ def try_out():
                 url = url_and_name.split(",")[0]
                 filename = url_and_name.split(",")[1]
                 text = arxiv_2_file(url, filename)
-                # text = summerizer(text)
                 st.success(text)
 
     # ImgAnnotationTab: Here is the entry point for image annotation
@@ -195,9 +192,9 @@ def try_out():
                 run_seg(f"../data/{path}")
         # classification annotation
         with clsTab:
-            custom_labels = ["", "lesion", "positive", "negative", "tumor", None]
             path = st.text_input("Enter the path to image folder", key="clsTab_path")
             if path:
+                custom_labels = ["", "lesion", "positive", "negative", "tumor", None]
                 select_label, report = run_cls(f"../data/{path}", custom_labels)
                 dataframe_annotation(
                     f"../data/{path}/*.jpeg", custom_labels, select_label, report
@@ -205,9 +202,6 @@ def try_out():
 
 
 def main():
-    # st.markdown("<h2 style='text-align: center; color: blue;'>Empowering Healthcare, One Byte at a Time!</h2>", unsafe_allow_html=True)
-    # st.image('utils/aidgenie.png', use_column_width=True)
-
     with st.sidebar:
         choice = option_menu(
             "Main Menu",

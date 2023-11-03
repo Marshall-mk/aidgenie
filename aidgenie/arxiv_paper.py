@@ -44,10 +44,8 @@ def search_arxiv(query):
 
     column_names = ["Title", "Date", "Id", "Summary", "URL"]
     df = pd.DataFrame(all_data, columns=column_names)
-    filtered_df = dataframe_explorer(df, case=False)
 
-    # print("Number of papers extracted : ",df.shape[0])
-    return filtered_df
+    return dataframe_explorer(df, case=False)
 
 
 def arxiv_2_file(url, filename):
@@ -71,82 +69,8 @@ def arxiv_2_file(url, filename):
             if chunk:  # filter out keep-alive new chunks
                 f.write(chunk)
 
-    if os.path.exists(file_path):
-        res = "PDF file downloaded successfully."
-    else:
-        res = "Failed to download the PDF file."
-
-    return res
-
-
-# def arxiv_2_file(url, filename):
-#     """
-#     This function downloads a PDF from a given URL and saves it to a file.
-
-#     Parameters:
-#     url (str): The URL of the PDF.
-#     filename (str): The name of the file to save the PDF as.
-
-#     Returns:
-#     res (str): A message indicating whether the download was successful.
-#     """
-#     url = url
-#     filename = filename+'.pdf'
-#     response = requests.get(url)
-#     # specify the desired folder path
-#     folder_path = "../data/"
-#     # join the folder path and filename
-#     file_path = os.path.join(folder_path, filename)
-#     msg = st.toast('Connecting to server...')
-#     if response.status_code == 200:
-#         msg.toast('Gathering info...')
-#         # YOUR_CODE
-#         download_size = int(response.headers.get("content-length", 0))
-#         downloaded = 0
-#         chunk_size = 1024
-#         for data in response.iter_content(chunk_size=chunk_size):
-#             downloaded += len(data)
-#         st.progress(downloaded / download_size)
-#         with open(file_path, "wb") as f:
-#             f.write(response.content)
-#         if downloaded == download_size:
-#             msg.toast('Finished!')
-#             res = "PDF file downloaded successfully."
-#         else:
-#             res = "Failed to download the PDF file."
-#         return res
-
-# def arxiv_2_file(url, filename):
-#     """
-#     This function downloads a PDF from a given URL and saves it to a file.
-
-#     Parameters:
-#     url (str): The URL of the PDF.
-#     filename (str): The name of the file to save the PDF as.
-
-#     Returns:
-#     res (str): A message indicating whether the download was successful.
-#     """
-#     url = url
-#     filename = filename+'.pdf'
-#     response = requests.get(url)
-#     # specify the desired folder path
-#     folder_path = "../data/"
-#     # join the folder path and filename
-#     file_path = os.path.join(folder_path, filename)
-#     if response.status_code == 200:
-#         # YOUR_CODE
-#         download_size = int(response.headers.get("content-length", 0))
-#         downloaded = 0
-#         # with open(file_path, "wb") as f:
-#         #     f.write(response.content)
-#         with open(file_path, "wb") as f:
-#             for chunk in response.iter_content(chunk_size=1024):
-#                 if chunk:  # filter out keep-alive new chunks
-#                     f.write(chunk)
-#                     downloaded += len(chunk)
-#         if downloaded == download_size:
-#             res = "PDF file downloaded successfully."
-#         else:
-#             res = "Failed to download the PDF file."
-#         return res
+    return (
+        "PDF file downloaded successfully."
+        if os.path.exists(file_path)
+        else "Failed to download the PDF file."
+    )

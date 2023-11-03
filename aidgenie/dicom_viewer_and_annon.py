@@ -76,7 +76,7 @@ def dicom_viewer(dicom_file):
                         dicom_dataset.pixel_array,
                     )
                     st.success("Slice Saved!")
-    except:
+    except Exception:
         st.warning("Uploaded file has a problem")
 
 
@@ -125,10 +125,10 @@ def anonymize_dicom_file(dicom_file):
         try:
             st.write("Manufacturer: ", dicom_dataset.Manufacturer)
             st.write("Model Name: ", dicom_dataset.ManufacturerModelName)
-        except:
+        except Exception:
             st.write("Manufacturer: None")
             st.write("Model Name: None")
-    except:
+    except Exception:
         st.warning("Uploaded Image has a problem")
 
     def callback(dataset, data_element):

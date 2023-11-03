@@ -5,6 +5,7 @@ import spacy
 import docopt
 import medspacy
 import pandas as pd
+from bioc import BioCPipeline
 from radtext.models import csv2bioc
 from radtext.cmd.ner import load_yml
 from radtext.core import BioCProcessor
@@ -19,6 +20,7 @@ from radtext.models.neg.match_ngrex import NegGrexPatterns
 from radtext.models.bioc_cdm_converter import convert_bioc_to_note_nlp
 from radtext.models.ner.ner_regex import NerRegExExtractor, BioCNerRegex
 from radtext.models.ner.ner_spacy import BioCNerSpacy, NerSpacyExtractor
+
 from radtext.models.section_split.section_split_medspacy import (
     BioCSectionSplitterMedSpacy,
 )
@@ -101,8 +103,7 @@ class TextProcessor:
         df = pd.read_csv(csv_file, dtype=str)
 
         df1 = df.drop(["note_text"], axis=1)
-        with pytest.raises(KeyError):
-            convert_note_nlp_table_to_bioc(df1)
+        convert_note_nlp_table_to_bioc(df1)
 
         df1 = df.drop(["note_type_concept_id"], axis=1)
         collection = convert_note_nlp_table_to_bioc(df1)
@@ -110,7 +111,7 @@ class TextProcessor:
         return collection.document
 
     # NER
-    def ner_regex(self, text):
+    def ner_regex(self, text):  # sourcery skip: class-extract-method
         phrases_file = self.resource_dir / "chexpert_phrases.yml"
         patterns = load_yml(phrases_file)
         extractor = NerRegExExtractor(patterns)
@@ -120,8 +121,7 @@ class TextProcessor:
         doc.add_passage(bioc.BioCPassage.of_text(text))
         processor.process_document(doc)
 
-        extracted_terms = set(ann.text for ann in doc.passages[0].annotations)
-        return extracted_terms
+        return {ann.text for ann in doc.passages[0].annotations}
 
     def ner_radlex(self, text):
         nlp = spacy.load("en_core_web_sm", exclude=["ner", "parser", "senter"])
@@ -129,12 +129,11 @@ class TextProcessor:
         extractor = NerSpacyExtractor(nlp, matchers)
         processor = BioCNerSpacy(extractor, "RadLex")
 
-        doc = bioc.BioCDocument()
+        doc = BioCPipeline()
         doc.add_passage(bioc.BioCPassage.of_text(text))
         processor.process_document(doc)
 
-        extracted_terms = set(ann.text for ann in doc.passages[0].annotations)
-        return extracted_terms
+        return {ann.text for ann in doc.passages[0].annotations}
 
     # section splitting
     def document(self, text):
@@ -166,7 +165,7 @@ class TextProcessor:
         return document
 
     # negation
-    def process_file(src, dest, processor: BioCProcessor, level: int):
+    def process_file(self, src, dest, processor: BioCProcessor, level: int):
         with open(src) as fp:
             collection = bioc.load(fp)
 
@@ -194,7 +193,7 @@ class TextProcessor:
         cleanup_actor = NegCleanUp(False)
         pipeline = BioCPipeline()
         pipeline.processors = [neg_actor, cleanup_actor]
-        process_file(input_file, output_file, pipeline, bioc.PASSAGE)
+        self.process_file(input_file, output_file, pipeline, bioc.PASSAGE)
 
 
 # processor = TextProcessor('utils')
