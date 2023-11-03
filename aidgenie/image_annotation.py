@@ -114,7 +114,7 @@ def run_seg(img_dir):
                 stroke_width=stroke_width,
                 stroke_color=stroke_color,
                 background_color=bg_color,
-                background_image=image if image else None,
+                background_image=image or None,
                 update_streamlit=realtime_update,
                 height=img_height,
                 width=img_width,
@@ -134,8 +134,7 @@ def run_seg(img_dir):
                 if st.button("Save Mask", key="seg_mask"):
                     # Save the result as the original name + mask
                     result = Image.fromarray((canvas_result.image_data))
-                    # file_name, file_extension = os.path.splitext(img_file_name)
-                    # result.save(file_name + '_mask.png')
+                    
                     result.save(os.path.join("../data", file_name + "_mask.png"))
 
                     st.success("Result saved as " + file_name + "_mask.png")

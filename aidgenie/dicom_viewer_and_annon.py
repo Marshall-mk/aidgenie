@@ -142,17 +142,6 @@ def anonymize_dicom_file(dicom_file):
         Returns:
         None
         """
-        # The data_element represents a DICOM (Digital Imaging and Communications in Medicine) tag.
-        # Each DICOM tag has a unique identifier (tag number), a value representation (VR), and a value.
-        # The VR indicates the data type and format of the value.
-        # Here are what the VRs in this code represent:
-        # "PN" (Person Name): a string representing a person's name
-        # "LO" (Long String): a string that can be up to 64 characters long
-        # "SH" (Short String): a string that can be up to 16 characters long
-        # "DA" (Date): a string in the format YYYYMMDD
-        # "TM" (Time): a string in the format HHMMSS.FFFFFF
-        # "DT" (Date Time): a string in the format YYYYMMDDHHMMSS.FFFFFF&ZZZZ
-        # "UI" (Unique Identifier): a string of digits representing a unique identifier
         if data_element.tag == "(0010,1010)":  # Patient's Age
             data_element.value = "000Y"
         if data_element.tag == "(0010,0040)":  # Patient's Sex
