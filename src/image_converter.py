@@ -91,7 +91,9 @@ class ImageConverter:
             except Exception:
                 st.write("Invalid Object Used")
 
-    def convert_to_h5(self) -> None:  # sourcery skip: class-extract-method, extract-method
+    def convert_to_h5(
+        self
+    ) -> None:  # sourcery skip: class-extract-method, extract-method
         """
         Converts the image dataset to h5 format.
         """

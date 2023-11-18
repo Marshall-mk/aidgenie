@@ -16,7 +16,7 @@ from dicom_viewer_and_annon import anonymize_dicom_file, dicom_viewer
 warnings.filterwarnings("ignore")
 
 
-def try_out():    # sourcery skip: extract-method, for-append-to-extend, identity-comprehension, list-comprehension, remove-pass-elif, simplify-generator, use-named-expression
+def try_out():  # sourcery skip: extract-method, for-append-to-extend, identity-comprehension, list-comprehension, remove-pass-elif, simplify-generator, use-named-expression
     #  headings and tabs creation
     (
         ConvertStoreTab,
@@ -169,7 +169,16 @@ def try_out():    # sourcery skip: extract-method, for-append-to-extend, identit
 
         if topic:
             df = search_arxiv(topic)
-            st.dataframe(df, use_container_width=True)
+            st.dataframe(
+                df,
+                use_container_width=True,
+                column_config={
+                    "URL": st.column_config.LinkColumn(
+                        "URL",
+                        help="The top trending Streamlit apps",
+                    )
+                },
+            )
             url_and_name = st.text_input(
                 "Enter url and name of desired paper to download",
                 help="Copy url from the table above and entire a desired file name, separate the url and name using a comma.",

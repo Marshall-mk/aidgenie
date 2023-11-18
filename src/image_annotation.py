@@ -134,7 +134,7 @@ def run_seg(img_dir):
                 if st.button("Save Mask", key="seg_mask"):
                     # Save the result as the original name + mask
                     result = Image.fromarray((canvas_result.image_data))
-                    
+
                     result.save(os.path.join("../data", file_name + "_mask.png"))
 
                     st.success("Result saved as " + file_name + "_mask.png")
