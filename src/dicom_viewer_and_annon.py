@@ -134,7 +134,9 @@ def anonymize_dicom_file(dicom_file):
     def callback(dataset, data_element):
         """
         Callback function to anonymize DICOM tags.
-
+        The data_element represents a DICOM (Digital Imaging and Communications in Medicine) tag.
+        Each DICOM tag has a unique identifier (tag number), a value representation (VR), and a value.
+        The VR indicates the data type and format of the value.
         Parameters:
         - dataset: DICOM dataset.
         - data_element: DICOM tag.

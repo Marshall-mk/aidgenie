@@ -18,7 +18,10 @@ def run_seg(img_dir):
     """
     # Initialize variables
     st.set_option("deprecation.showfileUploaderEncoding", False)
-    idm = ImageDirManager(img_dir)
+    try:
+        idm = ImageDirManager(img_dir)
+    except FileNotFoundError:
+        st.error("The specified image directory does not exist. If the error persists, please refresh the page.")
 
     if "files" not in st.session_state:
         st.session_state["files"] = idm.get_all_files()
@@ -261,12 +264,15 @@ def run_cls(img_dir, labels):
     # Main content: annotate images
     img_file_name = idm.get_image(st.session_state["image_index"])
     img_path = os.path.join(img_dir, img_file_name)
-    im = ImageManager(img_path)
-    img = im.get_img()
-    resized_img = im.resizing_img()
-    resized_rects = im.get_resized_rects()
-    with column_1:
-        rects = st_img_label(resized_img, box_color="red", rects=resized_rects)
+    try:
+        im = ImageManager(img_path)
+        img = im.get_img()
+        resized_img = im.resizing_img()
+        resized_rects = im.get_resized_rects()
+        with column_1:
+            rects = st_img_label(resized_img, box_color="red", rects=resized_rects)
+    except FileNotFoundError:
+        st.error("The specified image directory does not exist. If the error persists, please refresh the page.")
 
     def annotate():
         im.save_annotation()
@@ -274,27 +280,29 @@ def run_cls(img_dir, labels):
         if image_annotate_file_name not in st.session_state["annotation_files"]:
             st.session_state["annotation_files"].append(image_annotate_file_name)
         next_annotate_file()
+    try:
+        if rects:
+            st.button(label="Save", on_click=annotate, key="cls_annon")
+            preview_imgs = im.init_annotation(rects)
 
-    if rects:
-        st.button(label="Save", on_click=annotate, key="cls_annon")
-        preview_imgs = im.init_annotation(rects)
+            for i, prev_img in enumerate(preview_imgs):
+                prev_img[0].thumbnail((200, 200))
+                col1, col2 = st.columns(2)
+                with col1:
+                    col1.image(prev_img[0])
+                with col2:
+                    default_index = 0
+                    if prev_img[1]:
+                        default_index = labels.index(prev_img[1])
 
-        for i, prev_img in enumerate(preview_imgs):
-            prev_img[0].thumbnail((200, 200))
-            col1, col2 = st.columns(2)
-            with col1:
-                col1.image(prev_img[0])
-            with col2:
-                default_index = 0
-                if prev_img[1]:
-                    default_index = labels.index(prev_img[1])
+                    select_label = col2.selectbox(
+                        "Label", labels, key=f"label_{i}", index=default_index
+                    )
 
-                select_label = col2.selectbox(
-                    "Label", labels, key=f"label_{i}", index=default_index
-                )
-
-                im.set_annotation(i, select_label)
-        report = col2.text_input("write report")
+                    im.set_annotation(i, select_label)
+            report = col2.text_input("write report")
+    except UnboundLocalError:
+        st.error("The specified image directory does not exist. If the error persists, please refresh the page.")
     return select_label, report
 
 
