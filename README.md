@@ -1,6 +1,9 @@
 # aidgenie
 Empowering Health Care, One Byte at a Time!
+## Demo
+[![Watch the video](https://img.youtube.com/vi/xwiW8dCtqq0/maxresdefault.jpg)](https://youtu.be/xwiW8dCtqq0)
 
+Part 2 [here](https://youtu.be/cdWOd2nVCP8)
 ## Problem Statement
 The scarcity of reliable medical data from developing countries, particularly in regions like Nigeria and other parts of Africa, poses a significant challenge and contributes to bias in medical artificial intelligence (AI) systems. This challenge primarily stems from inadequate data management practices and the difficulty in accessing patient records, hindering organizations that rely on such data. Addressing this problem is crucial to foster unbiased and effective medical AI solutions.
 
